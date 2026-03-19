@@ -1,47 +1,83 @@
-from typing import List
-from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance, PointStruct
 import uuid
+import logging
+from typing import List
 
-# Initialize in-memory DB (no Docker needed)
-client = QdrantClient(":memory:")
+from qdrant_client import QdrantClient
+from qdrant_client.models import (
+    VectorParams,
+    Distance,
+    PointStruct,
+)
 
-COLLECTION_NAME = "documents"
+from app.core.config import QDRANT_PATH, QDRANT_COLLECTION
+
+logger = logging.getLogger(__name__)
 
 
-def create_collection(vector_size: int):
-    client.recreate_collection(
+client = QdrantClient(path=QDRANT_PATH)
+
+COLLECTION_NAME: str = QDRANT_COLLECTION
+
+
+def _collection_exists() -> bool:
+   
+    try:
+        collections = client.get_collections().collections
+        return any(c.name == COLLECTION_NAME for c in collections)
+    except Exception:
+        return False
+
+
+def create_collection(vector_size: int) -> None:
+   
+    if _collection_exists():
+        logger.info("Collection '%s' already exists — skipping creation.", COLLECTION_NAME)
+        return
+
+    client.create_collection(
         collection_name=COLLECTION_NAME,
         vectors_config=VectorParams(
             size=vector_size,
-            distance=Distance.COSINE
+            distance=Distance.COSINE,
+        ),
+    )
+    logger.info("Created collection '%s' (dim=%d).", COLLECTION_NAME, vector_size)
+
+
+def store_embeddings(chunks: List[str], embeddings: List[List[float]]) -> None:
+  
+    points = [
+        PointStruct(
+            id=str(uuid.uuid4()),
+            vector=embedding,
+            payload={"text": chunk},
         )
-    )
+        for chunk, embedding in zip(chunks, embeddings)
+    ]
+
+    client.upsert(collection_name=COLLECTION_NAME, points=points)
+    logger.info("Stored %d points in '%s'.", len(points), COLLECTION_NAME)
 
 
-def store_embeddings(chunks: List[str], embeddings: List[List[float]]):
-    points = []
+def search(query_embedding: List[float], limit: int = 3) -> List[str]:
+ 
+    if not _collection_exists():
+        logger.warning("Collection '%s' does not exist yet. Returning empty results.", COLLECTION_NAME)
+        return []
 
-    for chunk, embedding in zip(chunks, embeddings):
-        points.append(
-            PointStruct(
-                id=str(uuid.uuid4()),
-                vector=embedding,
-                payload={"text": chunk}
-            )
+    try:
+        result = client.query_points(
+            collection_name=COLLECTION_NAME,
+            query=query_embedding,
+            limit=limit,
         )
 
-    client.upsert(
-        collection_name=COLLECTION_NAME,
-        points=points
-    )
+        extracted: List[str] = []
+        for point in result.points:
+            if point.payload and "text" in point.payload:
+                extracted.append(point.payload["text"])
 
-
-def search(query_embedding: List[float], limit: int = 3):
-    results = client.search(
-        collection_name=COLLECTION_NAME,
-        query_vector=query_embedding,
-        limit=limit
-    )
-
-    return [r.payload["text"] for r in results]
+        return extracted
+    except Exception as exc:
+        logger.error("Qdrant search failed: %s", exc)
+        return []
