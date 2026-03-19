@@ -4,7 +4,7 @@ A complete backend implementation of a RAG (Retrieval-Augmented Generation) pipe
 
 
 
-## 🎯 Features
+## Features
 
 ### 1. Document Ingestion API
 - **Parsers:** Uploads `.pdf` or `.txt` files.
@@ -21,7 +21,7 @@ A complete backend implementation of a RAG (Retrieval-Augmented Generation) pipe
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 - **Framework:** FastAPI (Python 3.10+)
 - **Vector Database:** Qdrant (`qdrant-client`)
 - **Metadata & Bookings:** SQLite & SQLAlchemy (ORM)
@@ -31,7 +31,7 @@ A complete backend implementation of a RAG (Retrieval-Augmented Generation) pipe
 
 ---
 
-## 📁 Project Structure (Modular Clean Code)
+## Project Structure (Modular Clean Code)
 ```text
 RAG-Document-Assistant/
 ├── app/
@@ -64,7 +64,7 @@ RAG-Document-Assistant/
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### 1. Prerequisites
 - Python 3.10+
@@ -109,7 +109,7 @@ The Swagger UI will be available at: **http://127.0.0.1:8000/docs**
 
 ---
 
-## 🧪 API Documentation & Endpoints
+## API Documentation & Endpoints
 
 ### 1) Document Ingestion API `[POST /ingest/upload]`
 Uploads a document, extracts text, applies chunking, and saves embeddings/metadata.
@@ -174,7 +174,7 @@ Lists all interviews booked and stored in the database.
 
 ---
 
-## 📸 Test Evidence & Output Screenshots
+## Test Evidence & Output Screenshots
 
 Below are screenshots demonstrating the successful testing of the project requirements via Swagger UI:
 
