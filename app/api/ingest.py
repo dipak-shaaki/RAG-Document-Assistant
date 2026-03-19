@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Query
 from app.services.file_parser import extract_text
 from app.services.chunking import chunk_text
+from app.services.embedding import get_embeddings
 
 router = APIRouter()
 
@@ -16,10 +17,13 @@ async def upload_document(
 
         chunks = chunk_text(text, strategy)
 
+        embeddings = get_embeddings(chunks)
+
         return {
             "filename": file.filename,
             "num_chunks": len(chunks),
-            "sample_chunks": chunks[:3]
+            "embedding_dim": len(embeddings[0]),
+            "sample_embedding": embeddings[0][:5]
         }
 
     except ValueError as e:
