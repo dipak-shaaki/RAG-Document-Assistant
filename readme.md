@@ -208,11 +208,11 @@ Input:
 
 
 
-![Interview Booking Output](sample/screenshots/booking_chat.png)
+![Interview Booking Output](sample/screenshots/booking.png)
 
 ### 4. Database Persistence Verification
 > **Action:** Bookings API returns the securely saved booking from the SQLite metadata table.
 
-![Bookings API Output](sample/screenshots/show_all_bookings_db.png)
+![Bookings API Output](sample/screenshots/show_all_bookings.png)
 
 ---
