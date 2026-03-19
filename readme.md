@@ -74,7 +74,7 @@ RAG-Document-Assistant/
 
 ### 2. Clone & Install
 ```bash
-git clone <your-repo-link>
+git clone https://github.com/dipak-shaaki/RAG-Document-Assistant.git
 cd RAG-Document-Assistant
 
 # Create virtual environment
