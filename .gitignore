@@ -5,3 +5,4 @@ __pycache__/
 qdrant_data/
 app_data.db
 *.db
+app_data.db
