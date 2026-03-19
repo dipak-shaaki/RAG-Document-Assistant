@@ -1,0 +1,6 @@
+We are an AI software company.
+We are hiring Software Engineers. We are looking for candidates who know Python, FastAPI, and Machine Learning.
+To book an interview, just tell the assistant your name, email, and preferred date and time.
+Our core product is a Document Assistant that uses Conversational RAG.
+It does not use FAISS or Chroma, but rather stores embeddings in Qdrant and chat history in Redis.
+We are excited to build clean, modular code following industry standards for typing and annotations!
